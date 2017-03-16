@@ -13,14 +13,17 @@ def add_friend(msg):
 def text_reply(msg):
     getMsg=msg['Text']
     fr=msg['FromUserName']
-    saveMsg.saveMsg(fr,'user',getMsg)
+    friend=itchat.search_friends(userName=fr)
+    filename=(friend['NickName']+'-'+fr) #以昵称+id进行记录文件命名
+    saveMsg.saveMsg(filename,'user',getMsg)
+    # saveMsg.saveMsg(fr,'user',getMsg)
 
     if getMsg=="天气":
         sendMsg=getWeather.getWeather(0)
-        saveMsg.saveMsg(fr,'meme',sendMsg)
+        saveMsg.saveMsg(filename,'meme',sendMsg)
     else:
         sendMsg=getTuring.getTuring(getMsg) #图灵机器人
-        saveMsg.saveMsg(fr,'meme',sendMsg)
+        saveMsg.saveMsg(filename,'meme',sendMsg)
     return sendMsg
 
 	
