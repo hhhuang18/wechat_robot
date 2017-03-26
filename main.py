@@ -3,6 +3,7 @@ from itchat.content import *
 import getWeather
 import saveMsg
 import getTuring
+import getPowerRate
 
 @itchat.msg_register(FRIENDS) # 收到好友邀请自动添加
 def add_friend(msg):
@@ -16,16 +17,19 @@ def text_reply(msg):
     friend=itchat.search_friends(userName=fr)
     filename=(friend['NickName']+'-'+fr) #以昵称+id进行记录文件命名
     saveMsg.saveMsg(filename,'user',getMsg)
-    # saveMsg.saveMsg(fr,'user',getMsg)
 
-    if getMsg=="天气":
-        sendMsg=getWeather.getWeather(0)
-        saveMsg.saveMsg(filename,'meme',sendMsg)
-    else:
-        sendMsg=getTuring.getTuring(getMsg) #图灵机器人
-        saveMsg.saveMsg(filename,'meme',sendMsg)
+    try:
+    	if getMsg=="天气": #天气请求判断
+    		sendMsg=getWeather.getWeather(0)
+    	elif getPowerRate.judge(getMsg)!=0: #电费请求判断
+    		sendMsg=getPowerRate.judge(getMsg)
+    	else:
+    		sendMsg=getTuring.getTuring(getMsg) #图灵机器人
+    	saveMsg.saveMsg(filename,'meme',sendMsg)
+    except:
+    	sendMsg='小傻豹傻掉了'
+    	saveMsg.saveMsg(filename,'meme',sendMsg)
     return sendMsg
-
 	
 # 启动
 itchat.auto_login(True)
